@@ -1,0 +1,48 @@
+.wrapper {
+    margin-bottom: 4px;
+}
+
+.wrapper .label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.label .required {
+    margin-left: 4px;
+    color: red;
+}
+
+.input {
+    display: block;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.input.block {
+    width: 100%;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #4d90fe;
+}
+
+.input.invalid {
+    border-color: red;
+    background-color: #ffd7d7;
+}
+
+.input.invalid + .error {
+    display: block;
+}
+
+.error {
+    display: none;
+    color: red;
+    margin-top: 4px;
+    font-size: 12px;
+}
