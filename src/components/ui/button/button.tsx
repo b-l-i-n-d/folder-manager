@@ -7,6 +7,7 @@ interface ButtonProps {
     className?: string;
     block?: boolean;
     type?: "button" | "submit" | "reset";
+    color?: "primary" | "secondary";
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -16,15 +17,22 @@ export const Button: React.FC<ButtonProps> = ({
     className,
     block = false,
     type = "button",
+    color = "primary",
 }) => {
     return (
-        <button
-            type={type}
-            onClick={onClick}
-            disabled={disabled}
-            className={`${styles.button} ${className} ${block && "w-full"}`}
-        >
-            {children}
-        </button>
+        <div>
+            <button
+                type={type}
+                onClick={onClick}
+                disabled={disabled}
+                className={`${styles.button} ${
+                    color === "primary" && styles.primary
+                } ${color === "secondary" && styles.secondary} ${className} ${
+                    block && styles.block
+                } ${disabled && styles.disabled}`}
+            >
+                {children}
+            </button>
+        </div>
     );
 };

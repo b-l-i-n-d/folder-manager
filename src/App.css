@@ -1,0 +1,35 @@
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.home {
+    display: flex;
+    flex-direction: column;
+    min-width: 320px;
+    width: 540px;
+    justify-content: center;
+    margin: 1rem auto;
+}
+
+.home .input--section {
+    display: flex;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.home .folders--section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.home .folders--section .folder {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}

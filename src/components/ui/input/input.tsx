@@ -1,9 +1,9 @@
-import { useId } from "react";
+import { ChangeEvent, useId } from "react";
 import styles from "./input.module.css";
 
 interface TextInputProps {
     value: string;
-    onChange: (value: string) => void;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     label?: string;
     placeholder?: string;
     type?: string;
@@ -14,7 +14,7 @@ interface TextInputProps {
     required?: boolean;
 }
 
-export const TextInput: React.FC<TextInputProps> = ({
+export const TextInput = ({
     value,
     onChange,
     label,
@@ -25,7 +25,7 @@ export const TextInput: React.FC<TextInputProps> = ({
     className,
     block = false,
     required = false,
-}) => {
+}: TextInputProps) => {
     const id = useId();
     return (
         <div className={styles.wrapper}>
@@ -37,7 +37,7 @@ export const TextInput: React.FC<TextInputProps> = ({
                 id={id}
                 type={type}
                 value={value}
-                onChange={(e) => onChange(e.target.value)}
+                onChange={onChange}
                 placeholder={placeholder}
                 disabled={disabled}
                 className={`${styles.input} ${block && styles.block} ${
