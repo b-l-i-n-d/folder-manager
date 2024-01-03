@@ -13,11 +13,16 @@
 .breadcrumbs .item {
     font-weight: 500;
     font-size: 12px;
-    cursor: pointer;
 }
 
 .breadcrumbs .item:hover {
+    cursor: pointer;
     text-decoration: underline;
+}
+
+.breadcrumbs .item:hover:last-child {
+    text-decoration: none;
+    cursor: default;
 }
 
 .breadcrumbs .item:last-child {

@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, MouseEvent, useState } from "react";
 
 import { BreadCrumbs, BreadCrumbsItem } from "./ui/breadcrumbs/breadcrumbs";
 import { Button } from "./ui/button/button";
@@ -6,7 +6,8 @@ import { Card } from "./ui/card/card";
 import { Heading } from "./ui/heading/heading";
 import { TextInput } from "./ui/input/input";
 
-import { FolderIcon, FoldersIcon } from "./icons";
+import { FolderIcon, FoldersIcon, TrashIcon } from "./icons";
+import { Modal } from "./ui/modal/modal";
 
 export interface folderProps {
     [key: string]: folderProps | Record<string, never>;
@@ -14,13 +15,15 @@ export interface folderProps {
 
 export const Home = () => {
     const [folders, setFolders] = useState<folderProps>({});
-    const [renderedFolders, setRenderedFolders] = useState<folderProps>({});
+    const [currentFolders, setCurrentFolders] = useState<folderProps>({});
     const [folderName, setFolderName] = useState<string>("");
     const [error, setError] = useState<string>("");
     const [path, setPath] = useState<string[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [modalData, setModalData] = useState<string>("");
 
     const isExists = (name: string) => {
-        const folder = renderedFolders[name];
+        const folder = currentFolders[name];
         return folder !== undefined;
     };
 
@@ -30,6 +33,7 @@ export const Home = () => {
 
     const handleAddFolder = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        e.stopPropagation();
         if (!folderName) {
             setError("Folder name is required");
             return;
@@ -41,7 +45,7 @@ export const Home = () => {
         }
 
         setError("");
-        setRenderedFolders((prev) => {
+        setCurrentFolders((prev) => {
             return {
                 ...prev,
                 [folderName]: {},
@@ -61,9 +65,30 @@ export const Home = () => {
         });
     };
 
+    const handleDeleteFolder = (name: string) => {
+        setCurrentFolders((prev) => {
+            const temp = { ...prev };
+            delete temp[name];
+            return temp;
+        });
+
+        setFolders((prev) => {
+            let currentFolder = prev;
+
+            path.forEach((folder) => {
+                currentFolder[folder] = currentFolder[folder] || {};
+                currentFolder = currentFolder[folder];
+            });
+
+            delete currentFolder[name];
+            return { ...prev };
+        });
+        setIsModalOpen(false);
+    };
+
     const handleCurrentFolder = (name: string) => {
         addToPath(name);
-        setRenderedFolders(renderedFolders[name]);
+        setCurrentFolders(currentFolders[name]);
     };
 
     const addToPath = (name: string) => {
@@ -72,7 +97,7 @@ export const Home = () => {
 
     const navigateToHome = () => {
         setPath([]);
-        setRenderedFolders(folders);
+        setCurrentFolders(folders);
     };
 
     const handleNavigate = (index: number) => {
@@ -84,7 +109,22 @@ export const Home = () => {
 
         const newPath = path.slice(0, index + 1);
         setPath(newPath);
-        setRenderedFolders(temp);
+        setCurrentFolders(temp);
+    };
+
+    const handleModalOpen = (
+        folder: string,
+        e: MouseEvent<HTMLButtonElement>
+    ) => {
+        e.stopPropagation();
+
+        setIsModalOpen(true);
+        setModalData(folder);
+    };
+
+    const handleModalClose = () => {
+        setModalData("");
+        setIsModalOpen(false);
     };
 
     return (
@@ -127,14 +167,15 @@ export const Home = () => {
             </BreadCrumbs>
 
             <div className="folders-section">
-                {Object.keys(renderedFolders).length > 0 ? (
-                    Object.keys(renderedFolders).map((folder) => (
+                {Object.keys(currentFolders).length > 0 ? (
+                    Object.keys(currentFolders).map((folder) => (
                         <Card
                             key={folder}
                             onClick={() => handleCurrentFolder(folder)}
+                            className="folder-card"
                         >
                             <div className="folder">
-                                {Object.keys(renderedFolders[folder]).length >
+                                {Object.keys(currentFolders[folder]).length >
                                 0 ? (
                                     <FoldersIcon />
                                 ) : (
@@ -142,12 +183,41 @@ export const Home = () => {
                                 )}
                                 <p>{folder}</p>
                             </div>
+                            <Button
+                                isIcon
+                                color="danger"
+                                // onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                                //     handleDeleteFolder(folder, e);
+                                // }}
+                                onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                                    handleModalOpen(folder, e);
+                                }}
+                                className="folder-delete-btn"
+                            >
+                                <TrashIcon size={18} />
+                            </Button>
                         </Card>
                     ))
                 ) : (
                     <p>No folder found.</p>
                 )}
             </div>
+            <Modal
+                isOpen={isModalOpen}
+                onClose={handleModalClose}
+                title="Are you sure you want to delete this folder?"
+                className="confirm-modal"
+            >
+                <div className="confirm-modal-btns">
+                    <Button onClick={handleModalClose}>No</Button>
+                    <Button
+                        color="danger"
+                        onClick={() => handleDeleteFolder(modalData)}
+                    >
+                        Yes
+                    </Button>
+                </div>
+            </Modal>
         </div>
     );
 };

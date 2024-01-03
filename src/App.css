@@ -29,8 +29,29 @@
     margin-top: 1rem;
 }
 
-.home .folders-section .folder {
+.home .folders-section .folder-card {
+    display: flex;
+    justify-content: space-between;
+}
+
+.home .folders-section .folder-card .folder {
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+.home .folders-section .folder-card .folder-delete-btn {
+    display: none;
+}
+
+.home .folders-section .folder-card:hover .folder-delete-btn {
+    display: block;
+    transition: all 0.3s ease-out;
+}
+
+.confirm-modal .confirm-modal-btns {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
 }
