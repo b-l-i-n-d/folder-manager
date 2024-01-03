@@ -1,11 +1,12 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 
-import { FolderIcon, FoldersIcon } from "./icons";
 import { BreadCrumbs, BreadCrumbsItem } from "./ui/breadcrumbs/breadcrumbs";
 import { Button } from "./ui/button/button";
 import { Card } from "./ui/card/card";
 import { Heading } from "./ui/heading/heading";
 import { TextInput } from "./ui/input/input";
+
+import { FolderIcon, FoldersIcon } from "./icons";
 
 export interface folderProps {
     [key: string]: folderProps | Record<string, never>;
@@ -40,11 +41,12 @@ export const Home = () => {
         }
 
         setError("");
-        const updatedFolders = {
-            ...renderedFolders,
-            [folderName]: {},
-        };
-        setRenderedFolders(updatedFolders);
+        setRenderedFolders((prev) => {
+            return {
+                ...prev,
+                [folderName]: {},
+            };
+        });
         setFolderName("");
         setFolders((prev) => {
             let currentFolder = prev;
@@ -55,7 +57,6 @@ export const Home = () => {
             });
 
             currentFolder[folderName] = {};
-
             return { ...prev };
         });
     };
@@ -75,24 +76,36 @@ export const Home = () => {
     };
 
     const handleNavigate = (index: number) => {
+        let temp = { ...folders };
+
+        path.slice(0, index + 1).forEach((p) => {
+            temp = temp[p];
+        });
+
         const newPath = path.slice(0, index + 1);
         setPath(newPath);
-        const folder = newPath[newPath.length - 1];
-        setRenderedFolders(folders[folder]);
+        setRenderedFolders(temp);
     };
 
     return (
         <div className="home">
             <Heading title="Folder Manager" subtitle="Manage your folders" />
-            <form onSubmit={handleAddFolder} className="input--section">
+            <form onSubmit={handleAddFolder} className="input-section">
                 <TextInput
                     value={folderName}
                     onChange={handleInputChange}
                     label="Folder Name"
                     error={error}
+                    block
+                    required
                 />
 
-                <Button type="submit" onClick={() => {}} color="primary">
+                <Button
+                    className="submit-button"
+                    type="submit"
+                    onClick={() => {}}
+                    color="primary"
+                >
                     Add Folder
                 </Button>
             </form>
@@ -113,7 +126,7 @@ export const Home = () => {
                 ))}
             </BreadCrumbs>
 
-            <div className="folders--section">
+            <div className="folders-section">
                 {Object.keys(renderedFolders).length > 0 ? (
                     Object.keys(renderedFolders).map((folder) => (
                         <Card

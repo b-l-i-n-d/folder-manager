@@ -1,7 +1,7 @@
 .layout {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 100dvh;
 }
 
 .home {
@@ -13,22 +13,23 @@
     margin: 1rem auto;
 }
 
-.home .input--section {
-    display: flex;
+.home .input-section {
     margin-top: 1rem;
     margin-bottom: 1rem;
-    gap: 1rem;
-    align-items: flex-end;
 }
 
-.home .folders--section {
+.home .input-section .submit-button {
+    margin-top: 1rem;
+}
+
+.home .folders-section {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1rem;
     margin-top: 1rem;
 }
 
-.home .folders--section .folder {
+.home .folders-section .folder {
     display: flex;
     align-items: center;
     gap: 1rem;
