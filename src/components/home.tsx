@@ -1,115 +1,167 @@
 import { ChangeEvent, FormEvent, MouseEvent, useState } from "react";
 
-import { BreadCrumbs, BreadCrumbsItem } from "./ui/breadcrumbs/breadcrumbs";
 import { Button } from "./ui/button/button";
-import { Card } from "./ui/card/card";
 import { Heading } from "./ui/heading/heading";
 import { TextInput } from "./ui/input/input";
 
 import { FolderIcon, FoldersIcon, TrashIcon } from "./icons";
+import { BreadCrumbs, BreadCrumbsItem } from "./ui/breadcrumbs/breadcrumbs";
+import { Card } from "./ui/card/card";
 import { Modal } from "./ui/modal/modal";
 
 export interface folderProps {
-    [key: string]: folderProps | Record<string, never>;
+    [key: string]: {
+        title: string;
+        parentFolderId: string;
+        childFolderIds: string[];
+    };
 }
 
 export const Home = () => {
-    const [folders, setFolders] = useState<folderProps>({});
-    const [currentFolders, setCurrentFolders] = useState<folderProps>({});
+    const [folders, setFolders] = useState<folderProps>({
+        "1": {
+            title: "Folder 1",
+            parentFolderId: "",
+            childFolderIds: ["2"],
+        },
+        "2": {
+            title: "Folder 2",
+            parentFolderId: "1",
+            childFolderIds: [],
+        },
+        "3": {
+            title: "Folder 3",
+            parentFolderId: "",
+            childFolderIds: [],
+        },
+    });
+    const [currentFolderId, setCurrentFolderId] = useState<string>("");
     const [folderName, setFolderName] = useState<string>("");
     const [error, setError] = useState<string>("");
     const [path, setPath] = useState<string[]>([]);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [modalData, setModalData] = useState<string>("");
 
-    const isExists = (name: string) => {
-        const folder = currentFolders[name];
-        return folder !== undefined;
-    };
+    const folderIds = Object.keys(folders);
+    const renderedFolderIds = !currentFolderId
+        ? folderIds.filter((id) => !folders[id].parentFolderId)
+        : folders[currentFolderId].childFolderIds;
 
+    // const isExists = (name: string) => {
+    //     const folder = currentFolders[name];
+    //     return folder !== undefined;
+    // };
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setFolderName(e.target.value);
     };
 
     const handleAddFolder = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        e.stopPropagation();
         if (!folderName) {
             setError("Folder name is required");
             return;
         }
 
-        if (isExists(folderName)) {
-            setError("Folder already exists");
-            return;
-        }
+        // if (isExists(folderName)) {
+        //     setError("Folder already exists");
+        //     return;
+        // }
 
         setError("");
-        setCurrentFolders((prev) => {
+        setFolders((prev) => {
+            if (!currentFolderId) {
+                return {
+                    ...prev,
+                    [Date.now().toString()]: {
+                        title: folderName,
+                        parentFolderId: "",
+                        childFolderIds: [],
+                    },
+                };
+            }
+
+            const currentFolder = prev[currentFolderId];
+            const newFolderId = Date.now().toString();
             return {
                 ...prev,
-                [folderName]: {},
+                [currentFolderId]: {
+                    ...currentFolder,
+                    childFolderIds: [
+                        ...currentFolder.childFolderIds,
+                        newFolderId,
+                    ],
+                },
+                [newFolderId]: {
+                    title: folderName,
+                    parentFolderId: currentFolderId,
+                    childFolderIds: [],
+                },
             };
         });
         setFolderName("");
-        setFolders((prev) => {
-            let currentFolder = prev;
-
-            path.forEach((folder) => {
-                currentFolder[folder] = currentFolder[folder] || {};
-                currentFolder = currentFolder[folder];
-            });
-
-            currentFolder[folderName] = {};
-            return { ...prev };
-        });
     };
 
-    const handleDeleteFolder = (name: string) => {
-        setCurrentFolders((prev) => {
-            const temp = { ...prev };
-            delete temp[name];
-            return temp;
-        });
+    const handleDeleteFolder = (id: string) => {
+        const { parentFolderId } = folders[id];
+
+        if (!parentFolderId) {
+            setFolders((prev) => {
+                const { childFolderIds } = prev[id];
+                const newFolders = { ...prev };
+                delete newFolders[id];
+
+                childFolderIds.forEach((folderId) => {
+                    delete newFolders[folderId];
+                });
+
+                return newFolders;
+            });
+            setIsModalOpen(false);
+            return;
+        }
 
         setFolders((prev) => {
-            let currentFolder = prev;
+            const parent = prev[parentFolderId];
+            const childFolderIds = parent.childFolderIds.filter(
+                (folderId) => folderId !== id
+            );
 
-            path.forEach((folder) => {
-                currentFolder[folder] = currentFolder[folder] || {};
-                currentFolder = currentFolder[folder];
-            });
-
-            delete currentFolder[name];
-            return { ...prev };
+            return {
+                ...prev,
+                [parentFolderId]: {
+                    ...parent,
+                    childFolderIds,
+                },
+            };
         });
+
         setIsModalOpen(false);
     };
 
-    const handleCurrentFolder = (name: string) => {
-        addToPath(name);
-        setCurrentFolders(currentFolders[name]);
+    const handleCurrentFolder = (id: string) => {
+        addToPath(id);
+        setCurrentFolderId(id);
     };
 
-    const addToPath = (name: string) => {
-        setPath([...path, name]);
+    const addToPath = (id: string) => {
+        setPath([...path, id]);
     };
 
     const navigateToHome = () => {
         setPath([]);
-        setCurrentFolders(folders);
+        setCurrentFolderId("");
     };
 
-    const handleNavigate = (index: number) => {
-        let temp = { ...folders };
+    const handleNavigate = (id: string, index: number) => {
+        const temp = [...path];
+        // indexof id
+        if (index === -1 || index === temp.length - 1) {
+            return;
+        }
 
-        path.slice(0, index + 1).forEach((p) => {
-            temp = temp[p];
-        });
-
-        const newPath = path.slice(0, index + 1);
-        setPath(newPath);
-        setCurrentFolders(temp);
+        temp.splice(index + 1, temp.length - index - 1);
+        setPath(temp);
+        setCurrentFolderId(id);
     };
 
     const handleModalOpen = (
@@ -152,45 +204,37 @@ export const Home = () => {
 
             <BreadCrumbs>
                 <BreadCrumbsItem onClick={navigateToHome}>Home</BreadCrumbsItem>
-                {path.map((folder, index) => (
+                {path.map((id, index) => (
                     <BreadCrumbsItem
-                        key={folder}
-                        onClick={
-                            index === path.length - 1
-                                ? () => {}
-                                : () => handleNavigate(index)
-                        }
+                        key={id}
+                        onClick={() => handleNavigate(id, index)}
                     >
-                        {folder}
+                        {folders[id].title}
                     </BreadCrumbsItem>
                 ))}
             </BreadCrumbs>
 
             <div className="folders-section">
-                {Object.keys(currentFolders).length > 0 ? (
-                    Object.keys(currentFolders).map((folder) => (
+                {renderedFolderIds.length > 0 ? (
+                    renderedFolderIds.map((id) => (
                         <Card
-                            key={folder}
-                            onClick={() => handleCurrentFolder(folder)}
+                            key={id}
                             className="folder-card"
+                            onClick={() => handleCurrentFolder(id)}
                         >
                             <div className="folder">
-                                {Object.keys(currentFolders[folder]).length >
-                                0 ? (
+                                {folders[id].childFolderIds.length > 0 ? (
                                     <FoldersIcon />
                                 ) : (
                                     <FolderIcon />
                                 )}
-                                <p>{folder}</p>
+                                <p>{folders[id].title}</p>
                             </div>
                             <Button
                                 isIcon
                                 color="danger"
-                                // onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                                //     handleDeleteFolder(folder, e);
-                                // }}
                                 onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                                    handleModalOpen(folder, e);
+                                    handleModalOpen(id, e);
                                 }}
                                 className="folder-delete-btn"
                             >
@@ -199,7 +243,7 @@ export const Home = () => {
                         </Card>
                     ))
                 ) : (
-                    <p>No folder found.</p>
+                    <p>No folders.</p>
                 )}
             </div>
             <Modal

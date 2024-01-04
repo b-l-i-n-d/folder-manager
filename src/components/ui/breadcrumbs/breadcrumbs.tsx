@@ -1,7 +1,7 @@
 import styles from "./breadcrumbs.module.css";
 
 interface BreadCrumbsProps {
-    children?: React.ReactNode;
+    children: React.ReactNode;
     className?: string;
 }
 
