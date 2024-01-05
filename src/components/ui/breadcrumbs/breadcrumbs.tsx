@@ -6,7 +6,11 @@ interface BreadCrumbsProps {
 }
 
 export const BreadCrumbs = ({ className, children }: BreadCrumbsProps) => {
-    return <ol className={`${styles.breadcrumbs} ${className}`}>{children}</ol>;
+    return (
+        <nav aria-level={1}>
+            <ol className={`${styles.breadcrumbs} ${className}`}>{children}</ol>
+        </nav>
+    );
 };
 
 export const BreadCrumbsItem = ({
@@ -17,11 +21,9 @@ export const BreadCrumbsItem = ({
     onClick?: () => void;
 }) => {
     return (
-        <>
+        <li className={styles.item}>
             <span className={styles.separator}>/</span>
-            <li className={styles.item} onClick={onClick}>
-                {children}
-            </li>
-        </>
+            <a onClick={onClick}>{children}</a>
+        </li>
     );
 };

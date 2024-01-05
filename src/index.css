@@ -1,5 +1,24 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
 
+:root {
+    --border-width: 1px;
+    --border-radius: 0.5rem;
+    --border-color: #cccccc;
+    --border-color-primary: #3079ed;
+    --border-color-primary-hfa: #285acd;
+    --border-color-secondary: #cccccc;
+    --border-color-secondary-hfa: #999999;
+    --border-color-danger: #dc2626;
+    --border-color-danger-hfa: #b91c1c;
+
+    --color-primary: #4d90fe;
+    --color-primary-hfa: #357ae8;
+    --color-secondary: #f5f5f5;
+    --color-secondary-hfa: #eee;
+    --color-danger: #ef4444;
+    --color-danger-hfa: #dc2626;
+}
+
 html,
 body {
     height: 100%;

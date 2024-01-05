@@ -1,6 +1,7 @@
 import React from "react";
 import { XCrossIcon } from "../../icons";
 import styles from "./modal.module.css";
+import { createPortal } from "react-dom";
 
 interface ModalProps {
     children: React.ReactNode;
@@ -22,7 +23,7 @@ export const Modal = ({
         return null;
     }
 
-    return (
+    return createPortal(
         <section className={styles.modal}>
             <div className={styles.body}>
                 {/* Close btn */}
@@ -35,6 +36,7 @@ export const Modal = ({
                     {children}
                 </div>
             </div>
-        </section>
+        </section>,
+        document.getElementById("modal-root") as HTMLElement
     );
 };

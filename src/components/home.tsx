@@ -1,13 +1,15 @@
-import { ChangeEvent, FormEvent, MouseEvent, useState } from "react";
+import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from "react";
 
 import { Button } from "./ui/button/button";
 import { Heading } from "./ui/heading/heading";
 import { TextInput } from "./ui/input/input";
 
+import { generateFolderName } from "../utils/generateName";
 import { FolderIcon, FoldersIcon, TrashIcon } from "./icons";
 import { BreadCrumbs, BreadCrumbsItem } from "./ui/breadcrumbs/breadcrumbs";
 import { Card } from "./ui/card/card";
 import { Modal } from "./ui/modal/modal";
+import { Select } from "./ui/select/select";
 
 export interface folderProps {
     [key: string]: {
@@ -17,42 +19,39 @@ export interface folderProps {
     };
 }
 
+type sortType = "" | "asc" | "desc";
+
 export const Home = () => {
-    const [folders, setFolders] = useState<folderProps>({
-        "1": {
-            title: "Folder 1",
-            parentFolderId: "",
-            childFolderIds: ["2"],
-        },
-        "2": {
-            title: "Folder 2",
-            parentFolderId: "1",
-            childFolderIds: [],
-        },
-        "3": {
-            title: "Folder 3",
-            parentFolderId: "",
-            childFolderIds: [],
-        },
-    });
+    const [folders, setFolders] = useState<folderProps>({});
     const [currentFolderId, setCurrentFolderId] = useState<string>("");
     const [folderName, setFolderName] = useState<string>("");
     const [error, setError] = useState<string>("");
     const [path, setPath] = useState<string[]>([]);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [modalData, setModalData] = useState<string>("");
+    const [sort, setSort] = useState<sortType>("");
 
     const folderIds = Object.keys(folders);
-    const renderedFolderIds = !currentFolderId
-        ? folderIds.filter((id) => !folders[id].parentFolderId)
-        : folders[currentFolderId].childFolderIds;
+    const renderedFolderIds = (
+        !currentFolderId
+            ? folderIds.filter((id) => !folders[id].parentFolderId)
+            : folders[currentFolderId].childFolderIds
+    ).sort((a, b) => {
+        if (sort === "asc") {
+            return folders[a].title.localeCompare(folders[b].title);
+        } else if (sort === "desc") {
+            return folders[b].title.localeCompare(folders[a].title);
+        } else {
+            return 0;
+        }
+    });
 
-    // const isExists = (name: string) => {
-    //     const folder = currentFolders[name];
-    //     return folder !== undefined;
-    // };
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setFolderName(e.target.value);
+        setFolderName(e.target.value.trim());
+    };
+
+    const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        setSort(e.target.value as sortType);
     };
 
     const handleAddFolder = (e: FormEvent<HTMLFormElement>) => {
@@ -62,10 +61,14 @@ export const Home = () => {
             return;
         }
 
-        // if (isExists(folderName)) {
-        //     setError("Folder already exists");
-        //     return;
-        // }
+        const rennderedFoldersNames = renderedFolderIds.map(
+            (id) => folders[id].title
+        );
+
+        const generatedFolderName = generateFolderName(
+            folderName,
+            rennderedFoldersNames
+        );
 
         setError("");
         setFolders((prev) => {
@@ -73,7 +76,7 @@ export const Home = () => {
                 return {
                     ...prev,
                     [Date.now().toString()]: {
-                        title: folderName,
+                        title: generatedFolderName,
                         parentFolderId: "",
                         childFolderIds: [],
                     },
@@ -92,7 +95,7 @@ export const Home = () => {
                     ],
                 },
                 [newFolderId]: {
-                    title: folderName,
+                    title: generatedFolderName,
                     parentFolderId: currentFolderId,
                     childFolderIds: [],
                 },
@@ -101,41 +104,44 @@ export const Home = () => {
         setFolderName("");
     };
 
-    const handleDeleteFolder = (id: string) => {
-        const { parentFolderId } = folders[id];
+    const handleDeleteFolder = (folderIdToDelete: string) => {
+        setFolders((prevFolders) => {
+            const { parentFolderId, childFolderIds } =
+                prevFolders[folderIdToDelete];
 
-        if (!parentFolderId) {
-            setFolders((prev) => {
-                const { childFolderIds } = prev[id];
-                const newFolders = { ...prev };
-                delete newFolders[id];
+            if (!parentFolderId) {
+                const updatedFolders = { ...prevFolders };
+                delete updatedFolders[folderIdToDelete];
 
-                childFolderIds.forEach((folderId) => {
-                    delete newFolders[folderId];
+                childFolderIds.forEach((childId) => {
+                    delete updatedFolders[childId];
                 });
 
-                return newFolders;
-            });
-            setIsModalOpen(false);
-            return;
-        }
+                setIsModalOpen(false);
+                return updatedFolders;
+            }
 
-        setFolders((prev) => {
-            const parent = prev[parentFolderId];
-            const childFolderIds = parent.childFolderIds.filter(
-                (folderId) => folderId !== id
+            const parentFolder = prevFolders[parentFolderId];
+            const updatedChildFolderIds = parentFolder.childFolderIds.filter(
+                (childId) => childId !== folderIdToDelete
             );
 
-            return {
-                ...prev,
+            const updatedFolders = {
+                ...prevFolders,
                 [parentFolderId]: {
-                    ...parent,
-                    childFolderIds,
+                    ...parentFolder,
+                    childFolderIds: updatedChildFolderIds,
                 },
             };
-        });
+            delete updatedFolders[folderIdToDelete];
 
-        setIsModalOpen(false);
+            childFolderIds.forEach((childId) => {
+                delete updatedFolders[childId];
+            });
+
+            setIsModalOpen(false);
+            return updatedFolders;
+        });
     };
 
     const handleCurrentFolder = (id: string) => {
@@ -179,6 +185,18 @@ export const Home = () => {
         setIsModalOpen(false);
     };
 
+    useEffect(() => {
+        const localSort = localStorage.getItem("sort") as sortType;
+
+        if (localSort) {
+            setSort(localSort);
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem("sort", sort);
+    }, [sort]);
+
     return (
         <div className="home">
             <Heading title="Folder Manager" subtitle="Manage your folders" />
@@ -192,12 +210,7 @@ export const Home = () => {
                     required
                 />
 
-                <Button
-                    className="submit-button"
-                    type="submit"
-                    onClick={() => {}}
-                    color="primary"
-                >
+                <Button className="submit-button" type="submit" color="primary">
                     Add Folder
                 </Button>
             </form>
@@ -213,6 +226,28 @@ export const Home = () => {
                     </BreadCrumbsItem>
                 ))}
             </BreadCrumbs>
+
+            <div className="filters-section">
+                <Select
+                    options={[
+                        {
+                            value: "",
+                            label: "None",
+                        },
+                        {
+                            value: "asc",
+                            label: "Ascending",
+                        },
+                        {
+                            value: "desc",
+                            label: "Descending",
+                        },
+                    ]}
+                    value={sort}
+                    onChange={handleSelectChange}
+                    label="Sort by"
+                />
+            </div>
 
             <div className="folders-section">
                 {renderedFolderIds.length > 0 ? (

@@ -49,6 +49,13 @@
     transition: all 0.3s ease-out;
 }
 
+.home .filters-section {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 1rem;
+}
+
 .confirm-modal .confirm-modal-btns {
     display: flex;
     justify-content: flex-end;

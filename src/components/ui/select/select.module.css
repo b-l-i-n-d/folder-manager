@@ -1,0 +1,126 @@
+.wrapper {
+    margin-bottom: 0px;
+}
+
+.wrapper .label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.label .required {
+    margin-left: 4px;
+    color: red;
+}
+
+.select {
+    display: block;
+    width: 200px;
+    height: 30px;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    padding: 0 0.5rem;
+    font-size: 14px;
+    color: #333;
+    background: transparent;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    background-position-y: 5px;
+    background-repeat: no-repeat;
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.select:hover {
+    border-color: #999;
+}
+
+.select:focus {
+    border-color: var(--border-color-primary);
+}
+
+.select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.select:disabled:hover {
+    border-color: #ccc;
+}
+
+.select:disabled:focus {
+    border-color: #ccc;
+    box-shadow: none;
+}
+
+.select .option {
+    font-weight: 500;
+}
+
+.select .option:disabled {
+    color: #999;
+}
+
+.select .option:checked {
+    color: #333;
+    background-color: #ccc;
+}
+
+.select .option:checked:disabled {
+    color: #999;
+    background-color: transparent;
+}
+
+.select .option:checked:hover {
+    background-color: #ccc;
+}
+
+.select .option:hover {
+    background-color: #ccc;
+}
+
+.select .option:focus {
+    background-color: #ccc;
+}
+
+.select .option:disabled:hover {
+    background-color: transparent;
+}
+
+.select .option:disabled:focus {
+    background-color: transparent;
+}
+
+.select .option:disabled:active {
+    background-color: transparent;
+}
+
+.select .option:disabled:checked {
+    color: #999;
+    background-color: transparent;
+}
+
+.select .option:disabled:checked:hover {
+    background-color: transparent;
+}
+
+.select .option:disabled:checked:focus {
+    background-color: transparent;
+}
+
+.select .option:disabled:checked:active {
+    background-color: transparent;
+}
+
+.select .option:disabled:checked:disabled {
+    color: #999;
+    background-color: transparent;
+}
+
+.select .option:disabled:checked:hover {
+    background-color: transparent;
+}
