@@ -1,38 +1,26 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 
 import { BreadCrumbs, BreadCrumbsItem } from "./ui/breadcrumbs/breadcrumbs";
 import { Button } from "./ui/button/button";
-import { Card } from "./ui/card/card";
 import { Heading } from "./ui/heading/heading";
 import { TextInput } from "./ui/input/input";
-import { Modal } from "./ui/modal/modal";
 import { Select } from "./ui/select/select";
 
+import {
+    FolderContext,
+    FolderDispatchContext,
+} from "../context/folder-context";
+import { sortType } from "../types/types";
 import { generateFolderName } from "../utils/generateName";
-import { FolderIcon, FoldersIcon, MenuVerticalIcon, TrashIcon } from "./icons";
-import { Dropdown } from "./ui/dropdown/dropdown";
-
-export interface folderProps {
-    [key: string]: {
-        title: string;
-        parentFolderId: string;
-        childFolderIds: string[];
-    };
-}
-
-type sortType = "" | "asc" | "desc";
+import { Folders } from "./folders";
 
 export const Home = () => {
-    const localFolders = JSON.parse(localStorage.getItem("folders") || "{}");
-    const localSort = localStorage.getItem("sort") as sortType;
-    const [folders, setFolders] = useState<folderProps>(localFolders);
-    const [sort, setSort] = useState<sortType>(localSort);
-    const [currentFolderId, setCurrentFolderId] = useState<string>("");
+    const { folders, sort, currentFolderId, path } = useContext(FolderContext);
+    const { setFolders, setSort, setCurrentFolderId, setPath } = useContext(
+        FolderDispatchContext
+    );
     const [folderName, setFolderName] = useState<string>("");
     const [error, setError] = useState<string>("");
-    const [path, setPath] = useState<string[]>([]);
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [modalData, setModalData] = useState<string>("");
 
     const folderIds = Object.keys(folders);
     const renderedFolderIds = (
@@ -107,55 +95,6 @@ export const Home = () => {
         setFolderName("");
     };
 
-    const handleDeleteFolder = (folderIdToDelete: string) => {
-        setFolders((prevFolders) => {
-            const { parentFolderId, childFolderIds } =
-                prevFolders[folderIdToDelete];
-
-            if (!parentFolderId) {
-                const updatedFolders = { ...prevFolders };
-                delete updatedFolders[folderIdToDelete];
-
-                childFolderIds.forEach((childId) => {
-                    delete updatedFolders[childId];
-                });
-
-                setIsModalOpen(false);
-                return updatedFolders;
-            }
-
-            const parentFolder = prevFolders[parentFolderId];
-            const updatedChildFolderIds = parentFolder.childFolderIds.filter(
-                (childId) => childId !== folderIdToDelete
-            );
-
-            const updatedFolders = {
-                ...prevFolders,
-                [parentFolderId]: {
-                    ...parentFolder,
-                    childFolderIds: updatedChildFolderIds,
-                },
-            };
-            delete updatedFolders[folderIdToDelete];
-
-            childFolderIds.forEach((childId) => {
-                delete updatedFolders[childId];
-            });
-
-            setIsModalOpen(false);
-            return updatedFolders;
-        });
-    };
-
-    const handleCurrentFolder = (id: string) => {
-        addToPath(id);
-        setCurrentFolderId(id);
-    };
-
-    const addToPath = (id: string) => {
-        setPath([...path, id]);
-    };
-
     const navigateToHome = () => {
         setPath([]);
         setCurrentFolderId("");
@@ -172,24 +111,6 @@ export const Home = () => {
         setPath(temp);
         setCurrentFolderId(id);
     };
-
-    const handleModalOpen = (folder: string) => {
-        setIsModalOpen(true);
-        setModalData(folder);
-    };
-
-    const handleModalClose = () => {
-        setModalData("");
-        setIsModalOpen(false);
-    };
-
-    // useEffect(() => {
-    //     const localFolders = JSON.parse(localStorage.getItem("folders") || "{}");
-    //     const localSort = localStorage.getItem("sort") as sortType;
-
-    //     setFolders(localFolders);
-    //     setSort(localSort);
-    // }, [])
 
     useEffect(() => {
         localStorage.setItem("sort", sort);
@@ -248,85 +169,11 @@ export const Home = () => {
                     ]}
                     value={sort}
                     onChange={handleSelectChange}
-                    label="Sort by"
+                    label="Sort by name"
                 />
             </div>
 
-            <div className="folders-section">
-                {renderedFolderIds.length > 0 ? (
-                    renderedFolderIds.map((id) => (
-                        <Card
-                            key={id}
-                            className="folder-card"
-                            onClick={() => handleCurrentFolder(id)}
-                        >
-                            <div className="folder">
-                                {folders[id].childFolderIds.length > 0 ? (
-                                    <FoldersIcon />
-                                ) : (
-                                    <FolderIcon />
-                                )}
-                                <p>{folders[id].title}</p>
-                            </div>
-                            {/* <Button
-                                isIcon
-                                color="danger"
-                                onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                                    handleModalOpen(id, e);
-                                }}
-                                className="folder-delete-btn"
-                            >
-                                <TrashIcon size={18} />
-                            </Button> */}
-                            <Dropdown
-                                className="folder-dropdown"
-                                label={<MenuVerticalIcon size={16} />}
-                                options={[
-                                    // {
-                                    //     label: (
-                                    //         <div className="dropdown-menu">
-                                    //             <PenIcon />
-                                    //             <span>Edit</span>
-                                    //         </div>
-                                    //     ),
-                                    // },
-                                    {
-                                        label: (
-                                            <div className="dropdown-menu">
-                                                <TrashIcon />
-                                                <span>Delete</span>
-                                            </div>
-                                        ),
-                                        onClick: () => {
-                                            handleModalOpen(id);
-                                        },
-                                        color: "danger",
-                                    },
-                                ]}
-                                color="ghost"
-                            />
-                        </Card>
-                    ))
-                ) : (
-                    <p>No folders.</p>
-                )}
-            </div>
-            <Modal
-                isOpen={isModalOpen}
-                onClose={handleModalClose}
-                title="Are you sure you want to delete this folder?"
-                className="confirm-modal"
-            >
-                <div className="confirm-modal-btns">
-                    <Button onClick={handleModalClose}>No</Button>
-                    <Button
-                        color="danger"
-                        onClick={() => handleDeleteFolder(modalData)}
-                    >
-                        Yes
-                    </Button>
-                </div>
-            </Modal>
+            <Folders />
         </div>
     );
 };
