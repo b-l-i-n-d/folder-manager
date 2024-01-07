@@ -1,4 +1,4 @@
-export interface folderProps {
+export interface IFolderProps {
     [key: string]: {
         title: string;
         parentFolderId: string;
@@ -6,4 +6,6 @@ export interface folderProps {
     };
 }
 
-export type sortType = "" | "asc" | "desc";
+export type TSortType = "" | "asc" | "desc";
+
+export type TModalType = "deleteFolder";

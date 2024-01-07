@@ -10,7 +10,7 @@ import {
     FolderContext,
     FolderDispatchContext,
 } from "../context/folder-context";
-import { sortType } from "../types/types";
+import { TSortType } from "../types/types";
 import { generateFolderName } from "../utils/generateName";
 import { Folders } from "./folders";
 
@@ -42,7 +42,7 @@ export const Home = () => {
     };
 
     const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        setSort(e.target.value as sortType);
+        setSort(e.target.value as TSortType);
     };
 
     const handleAddFolder = (e: FormEvent<HTMLFormElement>) => {

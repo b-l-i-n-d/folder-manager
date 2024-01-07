@@ -1,23 +1,20 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 
-import { Button } from "./ui/button/button";
 import { Card } from "./ui/card/card";
 import { Dropdown } from "./ui/dropdown/dropdown";
-import { Modal } from "./ui/modal/modal";
 
 import {
     FolderContext,
     FolderDispatchContext,
 } from "../context/folder-context";
+import { ModalDispatchContext } from "../context/modal-context";
+
 import { FolderIcon, FoldersIcon, MenuVerticalIcon, TrashIcon } from "./icons";
 
 export const Folders = () => {
     const { folders, sort, currentFolderId, path } = useContext(FolderContext);
-    const { setFolders, setCurrentFolderId, setPath } = useContext(
-        FolderDispatchContext
-    );
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [modalData, setModalData] = useState<string>("");
+    const { setCurrentFolderId, setPath } = useContext(FolderDispatchContext);
+    const { onOpen } = useContext(ModalDispatchContext);
 
     const folderIds = Object.keys(folders);
     const renderedFolderIds = (
@@ -34,46 +31,6 @@ export const Folders = () => {
         }
     });
 
-    const handleDeleteFolder = (folderIdToDelete: string) => {
-        setFolders((prevFolders) => {
-            const { parentFolderId, childFolderIds } =
-                prevFolders[folderIdToDelete];
-
-            if (!parentFolderId) {
-                const updatedFolders = { ...prevFolders };
-                delete updatedFolders[folderIdToDelete];
-
-                childFolderIds.forEach((childId) => {
-                    delete updatedFolders[childId];
-                });
-
-                setIsModalOpen(false);
-                return updatedFolders;
-            }
-
-            const parentFolder = prevFolders[parentFolderId];
-            const updatedChildFolderIds = parentFolder.childFolderIds.filter(
-                (childId) => childId !== folderIdToDelete
-            );
-
-            const updatedFolders = {
-                ...prevFolders,
-                [parentFolderId]: {
-                    ...parentFolder,
-                    childFolderIds: updatedChildFolderIds,
-                },
-            };
-            delete updatedFolders[folderIdToDelete];
-
-            childFolderIds.forEach((childId) => {
-                delete updatedFolders[childId];
-            });
-
-            setIsModalOpen(false);
-            return updatedFolders;
-        });
-    };
-
     const handleCurrentFolder = (id: string) => {
         addToPath(id);
         setCurrentFolderId(id);
@@ -81,16 +38,6 @@ export const Folders = () => {
 
     const addToPath = (id: string) => {
         setPath([...path, id]);
-    };
-
-    const handleModalOpen = (folder: string) => {
-        setIsModalOpen(true);
-        setModalData(folder);
-    };
-
-    const handleModalClose = () => {
-        setModalData("");
-        setIsModalOpen(false);
     };
 
     return (
@@ -110,16 +57,6 @@ export const Folders = () => {
                             )}
                             <p>{folders[id].title}</p>
                         </div>
-                        {/* <Button
-                        isIcon
-                        color="danger"
-                        onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                            handleModalOpen(id, e);
-                        }}
-                        className="folder-delete-btn"
-                    >
-                        <TrashIcon size={18} />
-                    </Button> */}
                         <Dropdown
                             className="folder-dropdown"
                             label={<MenuVerticalIcon size={16} />}
@@ -139,9 +76,7 @@ export const Folders = () => {
                                             <span>Delete</span>
                                         </div>
                                     ),
-                                    onClick: () => {
-                                        handleModalOpen(id);
-                                    },
+                                    onClick: () => onOpen("deleteFolder", id),
                                     color: "danger",
                                 },
                             ]}
@@ -152,22 +87,6 @@ export const Folders = () => {
             ) : (
                 <p>No folders.</p>
             )}
-            <Modal
-                isOpen={isModalOpen}
-                onClose={handleModalClose}
-                title="Are you sure you want to delete this folder?"
-                className="confirm-modal"
-            >
-                <div className="confirm-modal-btns">
-                    <Button onClick={handleModalClose}>No</Button>
-                    <Button
-                        color="danger"
-                        onClick={() => handleDeleteFolder(modalData)}
-                    >
-                        Yes
-                    </Button>
-                </div>
-            </Modal>
         </div>
     );
 };
