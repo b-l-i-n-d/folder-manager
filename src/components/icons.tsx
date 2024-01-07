@@ -1,6 +1,6 @@
 import { SVGProps } from "react";
 
-export type IconSvgProps = SVGProps<SVGSVGElement> & {
+export type TIconSvgProps = SVGProps<SVGSVGElement> & {
     size?: number;
 };
 
@@ -8,13 +8,14 @@ export const FolderIcon = ({
     size = 36,
     width,
     height,
+    color = "#000000",
     ...props
-}: IconSvgProps) => (
+}: TIconSvgProps) => (
     <svg
         height={size || height}
         width={size || width}
         viewBox="0 0 24 24"
-        fill="none"
+        fill={color}
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
@@ -29,13 +30,14 @@ export const FoldersIcon = ({
     size = 36,
     width,
     height,
+    color = "#000000",
     ...props
-}: IconSvgProps) => (
+}: TIconSvgProps) => (
     <svg
         height={size || height}
         width={size || width}
         viewBox="0 0 24 24"
-        fill="none"
+        fill={color}
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
@@ -52,7 +54,7 @@ export const TrashIcon = ({
     width,
     height,
     ...props
-}: IconSvgProps) => (
+}: TIconSvgProps) => (
     <svg
         height={size || height}
         width={size || width}
@@ -75,7 +77,7 @@ export const XCrossIcon = ({
     width,
     height,
     ...props
-}: IconSvgProps) => (
+}: TIconSvgProps) => (
     <svg
         height={size || height}
         width={size || width}
@@ -98,7 +100,7 @@ export const PenIcon = ({
     width,
     height,
     ...props
-}: IconSvgProps) => (
+}: TIconSvgProps) => (
     <svg
         height={size || height}
         width={size || width}
@@ -119,7 +121,7 @@ export const MenuVerticalIcon = ({
     height,
     width,
     ...props
-}: IconSvgProps) => (
+}: TIconSvgProps) => (
     <svg
         height={size || height}
         width={size || width}

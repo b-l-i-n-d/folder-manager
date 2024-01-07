@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import styles from "./dropdown.module.css";
 
-interface DropdownProps {
+interface IDropdownProps {
     label: string | React.ReactNode;
     options: {
         label: string | React.ReactNode;
@@ -26,7 +26,7 @@ export const Dropdown = ({
     color,
     isIcon,
     className,
-}: DropdownProps) => {
+}: IDropdownProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const id = useId().split(":")[1];
     const drop = useRef<HTMLDivElement>(null);

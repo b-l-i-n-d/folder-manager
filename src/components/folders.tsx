@@ -9,7 +9,13 @@ import {
 } from "../context/folder-context";
 import { ModalDispatchContext } from "../context/modal-context";
 
-import { FolderIcon, FoldersIcon, MenuVerticalIcon, TrashIcon } from "./icons";
+import {
+    FolderIcon,
+    FoldersIcon,
+    MenuVerticalIcon,
+    PenIcon,
+    TrashIcon,
+} from "./icons";
 
 export const Folders = () => {
     const { folders, sort, currentFolderId, path } = useContext(FolderContext);
@@ -51,9 +57,9 @@ export const Folders = () => {
                     >
                         <div className="folder">
                             {folders[id].childFolderIds.length > 0 ? (
-                                <FoldersIcon />
+                                <FoldersIcon color={folders[id].color} />
                             ) : (
-                                <FolderIcon />
+                                <FolderIcon color={folders[id].color} />
                             )}
                             <p>{folders[id].title}</p>
                         </div>
@@ -61,14 +67,15 @@ export const Folders = () => {
                             className="folder-dropdown"
                             label={<MenuVerticalIcon size={16} />}
                             options={[
-                                // {
-                                //     label: (
-                                //         <div className="dropdown-menu">
-                                //             <PenIcon />
-                                //             <span>Edit</span>
-                                //         </div>
-                                //     ),
-                                // },
+                                {
+                                    label: (
+                                        <div className="dropdown-menu">
+                                            <PenIcon />
+                                            <span>Edit Color</span>
+                                        </div>
+                                    ),
+                                    onClick: () => onOpen("editColor", id),
+                                },
                                 {
                                     label: (
                                         <div className="dropdown-menu">

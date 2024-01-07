@@ -3,7 +3,7 @@ import { XCrossIcon } from "../../icons";
 import styles from "./modal.module.css";
 import { createPortal } from "react-dom";
 
-interface ModalProps {
+interface IModalProps {
     children: React.ReactNode;
     isOpen: boolean;
     onClose: React.MouseEventHandler<HTMLButtonElement>;
@@ -18,7 +18,7 @@ export const Modal = ({
     onClose,
     className,
     title,
-}: ModalProps) => {
+}: IModalProps) => {
     if (!isOpen) {
         return null;
     }
@@ -28,7 +28,7 @@ export const Modal = ({
             <div className={styles.body}>
                 {/* Close btn */}
                 <button className={styles.closeBtn} onClick={onClose}>
-                    <XCrossIcon />
+                    <XCrossIcon size={24} />
                 </button>
                 {/* Main content */}
                 <div className={`${styles.content} ${className}`}>
