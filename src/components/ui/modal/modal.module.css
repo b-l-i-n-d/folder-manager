@@ -16,7 +16,7 @@
     max-width: 500px;
     background-color: #fff;
     border-radius: var(--border-radius);
-    padding: 1rem;
+    padding: 1.5rem;
 }
 
 .modal .closeBtn {

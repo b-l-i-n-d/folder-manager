@@ -1,15 +1,16 @@
-import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
+import { BreadCrumbs, BreadCrumbsItem } from "./ui/breadcrumbs/breadcrumbs";
 import { Button } from "./ui/button/button";
+import { Card } from "./ui/card/card";
 import { Heading } from "./ui/heading/heading";
 import { TextInput } from "./ui/input/input";
-
-import { generateFolderName } from "../utils/generateName";
-import { FolderIcon, FoldersIcon, TrashIcon } from "./icons";
-import { BreadCrumbs, BreadCrumbsItem } from "./ui/breadcrumbs/breadcrumbs";
-import { Card } from "./ui/card/card";
 import { Modal } from "./ui/modal/modal";
 import { Select } from "./ui/select/select";
+
+import { generateFolderName } from "../utils/generateName";
+import { FolderIcon, FoldersIcon, MenuVerticalIcon, TrashIcon } from "./icons";
+import { Dropdown } from "./ui/dropdown/dropdown";
 
 export interface folderProps {
     [key: string]: {
@@ -22,14 +23,16 @@ export interface folderProps {
 type sortType = "" | "asc" | "desc";
 
 export const Home = () => {
-    const [folders, setFolders] = useState<folderProps>({});
+    const localFolders = JSON.parse(localStorage.getItem("folders") || "{}");
+    const localSort = localStorage.getItem("sort") as sortType;
+    const [folders, setFolders] = useState<folderProps>(localFolders);
+    const [sort, setSort] = useState<sortType>(localSort);
     const [currentFolderId, setCurrentFolderId] = useState<string>("");
     const [folderName, setFolderName] = useState<string>("");
     const [error, setError] = useState<string>("");
     const [path, setPath] = useState<string[]>([]);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [modalData, setModalData] = useState<string>("");
-    const [sort, setSort] = useState<sortType>("");
 
     const folderIds = Object.keys(folders);
     const renderedFolderIds = (
@@ -170,12 +173,7 @@ export const Home = () => {
         setCurrentFolderId(id);
     };
 
-    const handleModalOpen = (
-        folder: string,
-        e: MouseEvent<HTMLButtonElement>
-    ) => {
-        e.stopPropagation();
-
+    const handleModalOpen = (folder: string) => {
         setIsModalOpen(true);
         setModalData(folder);
     };
@@ -185,21 +183,26 @@ export const Home = () => {
         setIsModalOpen(false);
     };
 
-    useEffect(() => {
-        const localSort = localStorage.getItem("sort") as sortType;
+    // useEffect(() => {
+    //     const localFolders = JSON.parse(localStorage.getItem("folders") || "{}");
+    //     const localSort = localStorage.getItem("sort") as sortType;
 
-        if (localSort) {
-            setSort(localSort);
-        }
-    }, []);
+    //     setFolders(localFolders);
+    //     setSort(localSort);
+    // }, [])
 
     useEffect(() => {
         localStorage.setItem("sort", sort);
     }, [sort]);
 
+    useEffect(() => {
+        localStorage.setItem("folders", JSON.stringify(folders));
+    }, [folders]);
+
     return (
         <div className="home">
             <Heading title="Folder Manager" subtitle="Manage your folders" />
+
             <form onSubmit={handleAddFolder} className="input-section">
                 <TextInput
                     value={folderName}
@@ -265,7 +268,7 @@ export const Home = () => {
                                 )}
                                 <p>{folders[id].title}</p>
                             </div>
-                            <Button
+                            {/* <Button
                                 isIcon
                                 color="danger"
                                 onClick={(e: MouseEvent<HTMLButtonElement>) => {
@@ -274,7 +277,34 @@ export const Home = () => {
                                 className="folder-delete-btn"
                             >
                                 <TrashIcon size={18} />
-                            </Button>
+                            </Button> */}
+                            <Dropdown
+                                className="folder-dropdown"
+                                label={<MenuVerticalIcon size={16} />}
+                                options={[
+                                    // {
+                                    //     label: (
+                                    //         <div className="dropdown-menu">
+                                    //             <PenIcon />
+                                    //             <span>Edit</span>
+                                    //         </div>
+                                    //     ),
+                                    // },
+                                    {
+                                        label: (
+                                            <div className="dropdown-menu">
+                                                <TrashIcon />
+                                                <span>Delete</span>
+                                            </div>
+                                        ),
+                                        onClick: () => {
+                                            handleModalOpen(id);
+                                        },
+                                        color: "danger",
+                                    },
+                                ]}
+                                color="ghost"
+                            />
                         </Card>
                     ))
                 ) : (

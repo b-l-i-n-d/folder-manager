@@ -39,7 +39,7 @@ export const Select = ({
             >
                 {options.map((option) => (
                     <option
-                        className={`${styles.option}`}
+                        className={styles.option}
                         key={option.value}
                         value={option.value}
                     >

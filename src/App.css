@@ -32,6 +32,7 @@
 .home .folders-section .folder-card {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .home .folders-section .folder-card .folder {
@@ -40,13 +41,19 @@
     gap: 1rem;
 }
 
-.home .folders-section .folder-card .folder-delete-btn {
-    display: none;
+.home .folders-section .folder-card .folder-dropdown {
+    padding: 2px;
 }
 
-.home .folders-section .folder-card:hover .folder-delete-btn {
+/* .home .folders-section .folder-card:hover .dropdown {
     display: block;
     transition: all 0.3s ease-out;
+} */
+
+.home .folders-section .folder-card .dropdown-menu {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .home .filters-section {
