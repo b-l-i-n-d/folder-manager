@@ -1,12 +1,15 @@
-import { ChangeEvent, FormEvent, useContext, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 import { Button } from "../ui/button/button";
 import { Modal } from "../ui/modal/modal";
 
-import { FolderDispatchContext } from "../../context/folder-context";
 import {
-    ModalContext,
-    ModalDispatchContext,
+    useFolderContext,
+    useFolderDispatchContext,
+} from "../../context/folder-context";
+import {
+    useModalContext,
+    useModalDispatchContext,
 } from "../../context/modal-context";
 
 const predefinedColor: {
@@ -19,9 +22,10 @@ const predefinedColor: {
 };
 
 export const EditColorModal = () => {
-    const { isOpen, type, data } = useContext(ModalContext);
-    const { onClose } = useContext(ModalDispatchContext);
-    const { setFolders } = useContext(FolderDispatchContext);
+    const { isOpen, type, data } = useModalContext();
+    const { onClose } = useModalDispatchContext();
+    const { setFolders } = useFolderDispatchContext();
+    const { folders } = useFolderContext();
 
     const [color, setColor] = useState<string>("#000000");
 
@@ -38,7 +42,6 @@ export const EditColorModal = () => {
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log(color, data);
         setFolders((prevFolders) => {
             const upldatedFolders = data
                 ? {
@@ -56,6 +59,12 @@ export const EditColorModal = () => {
         onClose();
         setColor("#000000");
     };
+
+    useEffect(() => {
+        if (data) {
+            setColor(folders[data].color || "#000000");
+        }
+    }, [data, folders]);
 
     return (
         <Modal

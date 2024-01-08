@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { XCrossIcon } from "../../icons";
 import styles from "./modal.module.css";
@@ -19,8 +19,6 @@ export const Modal = ({
     className,
     title,
 }: IModalProps) => {
-    const modal = useRef<HTMLDivElement>(null);
-
     const handleClick = (e: Event) => {
         if (!(e.target as HTMLElement).closest(`.${styles.body}`)) {
             onClose();
@@ -50,7 +48,7 @@ export const Modal = ({
 
     return createPortal(
         <section className={styles.modal}>
-            <div ref={modal} className={styles.body}>
+            <div className={styles.body}>
                 {/* Close btn */}
                 <button className={styles.closeBtn} onClick={onClose}>
                     <XCrossIcon size={24} />

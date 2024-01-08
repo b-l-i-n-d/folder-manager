@@ -1,13 +1,11 @@
-import { useContext } from "react";
-
 import { Card } from "./ui/card/card";
 import { Dropdown } from "./ui/dropdown/dropdown";
 
 import {
-    FolderContext,
-    FolderDispatchContext,
+    useFolderContext,
+    useFolderDispatchContext,
 } from "../context/folder-context";
-import { ModalDispatchContext } from "../context/modal-context";
+import { useModalDispatchContext } from "../context/modal-context";
 
 import {
     FolderIcon,
@@ -18,9 +16,9 @@ import {
 } from "./icons";
 
 export const Folders = () => {
-    const { folders, sort, currentFolderId, path } = useContext(FolderContext);
-    const { setCurrentFolderId, setPath } = useContext(FolderDispatchContext);
-    const { onOpen } = useContext(ModalDispatchContext);
+    const { folders, sort, currentFolderId, path } = useFolderContext();
+    const { setCurrentFolderId, setPath } = useFolderDispatchContext();
+    const { onOpen } = useModalDispatchContext();
 
     const folderIds = Object.keys(folders);
     const renderedFolderIds = (
