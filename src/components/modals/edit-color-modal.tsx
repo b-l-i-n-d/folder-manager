@@ -107,7 +107,7 @@ export const EditColorModal = () => {
                 </div>
 
                 <div className="edit-color-modal-btns">
-                    <Button>Close</Button>
+                    <Button onClick={onClose}>Close</Button>
                     <Button form="color-form" color="primary" type="submit">
                         Save
                     </Button>

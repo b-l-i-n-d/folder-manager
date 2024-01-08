@@ -1,5 +1,7 @@
 import { createContext, useState } from "react";
 
+import { DeleteFolderModal } from "../components/modals/delete-folder-modal";
+import { EditColorModal } from "../components/modals/edit-color-modal";
 import { TModalType } from "../types/types";
 
 interface IModalContext {
@@ -54,6 +56,8 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
                 }}
             >
                 {children}
+                <DeleteFolderModal />
+                <EditColorModal />
             </ModalDispatchContext.Provider>
         </ModalContext.Provider>
     );

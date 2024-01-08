@@ -9,7 +9,7 @@ import {
     ModalDispatchContext,
 } from "../../context/modal-context";
 
-export const DeleteFolderMOdal = () => {
+export const DeleteFolderModal = () => {
     const { setFolders } = useContext(FolderDispatchContext);
     const { isOpen, data: modalData, type } = useContext(ModalContext);
     const { onClose } = useContext(ModalDispatchContext);
