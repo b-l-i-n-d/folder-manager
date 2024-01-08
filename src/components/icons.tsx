@@ -1,6 +1,6 @@
 import { SVGProps } from "react";
 
-export type IconSvgProps = SVGProps<SVGSVGElement> & {
+export type TIconSvgProps = SVGProps<SVGSVGElement> & {
     size?: number;
 };
 
@@ -8,13 +8,14 @@ export const FolderIcon = ({
     size = 36,
     width,
     height,
+    color = "#000000",
     ...props
-}: IconSvgProps) => (
+}: TIconSvgProps) => (
     <svg
         height={size || height}
         width={size || width}
         viewBox="0 0 24 24"
-        fill="none"
+        fill={color}
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
@@ -29,13 +30,14 @@ export const FoldersIcon = ({
     size = 36,
     width,
     height,
+    color = "#000000",
     ...props
-}: IconSvgProps) => (
+}: TIconSvgProps) => (
     <svg
         height={size || height}
         width={size || width}
         viewBox="0 0 24 24"
-        fill="none"
+        fill={color}
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
@@ -48,11 +50,11 @@ export const FoldersIcon = ({
 );
 
 export const TrashIcon = ({
-    size = 36,
+    size = 16,
     width,
     height,
     ...props
-}: IconSvgProps) => (
+}: TIconSvgProps) => (
     <svg
         height={size || height}
         width={size || width}
@@ -75,7 +77,7 @@ export const XCrossIcon = ({
     width,
     height,
     ...props
-}: IconSvgProps) => (
+}: TIconSvgProps) => (
     <svg
         height={size || height}
         width={size || width}
@@ -90,5 +92,49 @@ export const XCrossIcon = ({
         <circle cx="12" cy="12" r="10" />
         <path d="m15 9-6 6" />
         <path d="m9 9 6 6" />
+    </svg>
+);
+
+export const PenIcon = ({
+    size = 16,
+    width,
+    height,
+    ...props
+}: TIconSvgProps) => (
+    <svg
+        height={size || height}
+        width={size || width}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        {...props}
+    >
+        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+    </svg>
+);
+
+export const MenuVerticalIcon = ({
+    size = 16,
+    height,
+    width,
+    ...props
+}: TIconSvgProps) => (
+    <svg
+        height={size || height}
+        width={size || width}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        {...props}
+    >
+        <circle cx="12" cy="12" r="1" />
+        <circle cx="12" cy="5" r="1" />
+        <circle cx="12" cy="19" r="1" />
     </svg>
 );

@@ -16,19 +16,31 @@
     max-width: 500px;
     background-color: #fff;
     border-radius: var(--border-radius);
-    padding: 1rem;
+    padding: 1.5rem;
+    position: relative;
 }
 
 .modal .closeBtn {
+    position: absolute;
+    right: 0.75rem;
+    top: 0.75rem;
     background: none;
     border: none;
     outline: none;
     box-shadow: none;
     cursor: pointer;
     float: right;
+    padding: 0rem;
+    transition: all 0.3 ease;
+}
+
+.modal .closeBtn:hover {
+    background-color: var(--color-secondary-hfa);
+    border-radius: var(--border-radius);
 }
 
 .modal .body .content .title {
     font-size: 1rem;
     font-weight: 600;
+    margin-bottom: 1rem;
 }

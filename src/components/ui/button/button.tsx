@@ -1,6 +1,6 @@
 import styles from "./button.module.css";
 
-interface ButtonProps {
+interface IButtonProps {
     children: React.ReactNode;
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
     disabled?: boolean;
@@ -9,9 +9,10 @@ interface ButtonProps {
     type?: "button" | "submit" | "reset";
     color?: "primary" | "secondary" | "danger";
     isIcon?: boolean;
+    form?: string;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button = ({
     children,
     onClick,
     disabled = false,
@@ -20,7 +21,8 @@ export const Button: React.FC<ButtonProps> = ({
     type = "button",
     color,
     isIcon = false,
-}) => {
+    form,
+}: IButtonProps) => {
     return (
         <div>
             <button
@@ -34,6 +36,7 @@ export const Button: React.FC<ButtonProps> = ({
                 ${className} ${block && styles.block} ${
                     disabled && styles.disabled
                 }`}
+                form={form}
             >
                 {children}
             </button>

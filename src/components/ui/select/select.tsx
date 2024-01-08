@@ -1,7 +1,7 @@
 import { useId } from "react";
 import styles from "./select.module.css";
 
-interface SelectProps {
+interface ISelectProps {
     title?: string;
     label?: string;
     options: {
@@ -20,7 +20,7 @@ export const Select = ({
     onChange,
     value,
     className,
-}: SelectProps) => {
+}: ISelectProps) => {
     const id = useId();
     return (
         <div className={styles.wrapper}>
@@ -39,7 +39,7 @@ export const Select = ({
             >
                 {options.map((option) => (
                     <option
-                        className={`${styles.option}`}
+                        className={styles.option}
                         key={option.value}
                         value={option.value}
                     >

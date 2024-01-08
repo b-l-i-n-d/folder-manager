@@ -1,7 +1,7 @@
 import { ChangeEvent, useId } from "react";
 import styles from "./input.module.css";
 
-interface TextInputProps {
+interface ITextInputProps {
     value: string;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     label?: string;
@@ -25,7 +25,7 @@ export const TextInput = ({
     className,
     block = false,
     required = false,
-}: TextInputProps) => {
+}: ITextInputProps) => {
     const id = useId();
     return (
         <div className={styles.wrapper}>

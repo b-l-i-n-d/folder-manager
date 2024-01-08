@@ -1,11 +1,11 @@
 import styles from "./breadcrumbs.module.css";
 
-interface BreadCrumbsProps {
+interface IBreadCrumbsProps {
     children: React.ReactNode;
     className?: string;
 }
 
-export const BreadCrumbs = ({ className, children }: BreadCrumbsProps) => {
+export const BreadCrumbs = ({ className, children }: IBreadCrumbsProps) => {
     return (
         <nav aria-level={1}>
             <ol className={`${styles.breadcrumbs} ${className}`}>{children}</ol>
