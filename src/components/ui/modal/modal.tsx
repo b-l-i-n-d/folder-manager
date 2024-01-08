@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { XCrossIcon } from "../../icons";
 import styles from "./modal.module.css";
-import { createPortal } from "react-dom";
 
 interface IModalProps {
     children: React.ReactNode;
     isOpen: boolean;
-    onClose: React.MouseEventHandler<HTMLButtonElement>;
+    onClose: () => void;
     className?: string;
     title?: string;
     data?: Record<string, unknown>;
@@ -19,13 +19,38 @@ export const Modal = ({
     className,
     title,
 }: IModalProps) => {
+    const modal = useRef<HTMLDivElement>(null);
+
+    const handleClick = (e: Event) => {
+        if (!(e.target as HTMLElement).closest(`.${styles.body}`)) {
+            onClose();
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener("keydown", (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                onClose();
+            }
+        });
+        document.addEventListener("click", handleClick);
+        return () => {
+            window.removeEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    onClose();
+                }
+            });
+            document.removeEventListener("click", handleClick);
+        };
+    });
+
     if (!isOpen) {
         return null;
     }
 
     return createPortal(
         <section className={styles.modal}>
-            <div className={styles.body}>
+            <div ref={modal} className={styles.body}>
                 {/* Close btn */}
                 <button className={styles.closeBtn} onClick={onClose}>
                     <XCrossIcon size={24} />
