@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { IFolderProps, TSortType } from "../types/types";
 
@@ -16,18 +16,26 @@ interface IFolderDispatchContext {
     setPath: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-export const FolderContext = createContext<IFolderContext>({
+const FolderContext = createContext<IFolderContext>({
     folders: {},
     sort: "",
     currentFolderId: "",
     path: [],
 });
-export const FolderDispatchContext = createContext<IFolderDispatchContext>({
+const FolderDispatchContext = createContext<IFolderDispatchContext>({
     setFolders: {} as React.Dispatch<React.SetStateAction<IFolderProps>>,
     setSort: {} as React.Dispatch<React.SetStateAction<TSortType>>,
     setCurrentFolderId: {} as React.Dispatch<React.SetStateAction<string>>,
     setPath: {} as React.Dispatch<React.SetStateAction<string[]>>,
 });
+
+export const useFolderContext = () => {
+    return useContext(FolderContext);
+};
+
+export const useFolderDispatchContext = () => {
+    return useContext(FolderDispatchContext);
+};
 
 export const FolderProvider = ({ children }: { children: React.ReactNode }) => {
     const localFolders = JSON.parse(localStorage.getItem("folders") || "{}");

@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 import { BreadCrumbs, BreadCrumbsItem } from "./ui/breadcrumbs/breadcrumbs";
 import { Button } from "./ui/button/button";
@@ -7,18 +7,17 @@ import { TextInput } from "./ui/input/input";
 import { Select } from "./ui/select/select";
 
 import {
-    FolderContext,
-    FolderDispatchContext,
+    useFolderContext,
+    useFolderDispatchContext,
 } from "../context/folder-context";
 import { TSortType } from "../types/types";
 import { generateFolderName } from "../utils/generateName";
 import { Folders } from "./folders";
 
 export const Home = () => {
-    const { folders, sort, currentFolderId, path } = useContext(FolderContext);
-    const { setFolders, setSort, setCurrentFolderId, setPath } = useContext(
-        FolderDispatchContext
-    );
+    const { folders, sort, currentFolderId, path } = useFolderContext();
+    const { setFolders, setSort, setCurrentFolderId, setPath } =
+        useFolderDispatchContext();
     const [folderName, setFolderName] = useState<string>("");
     const [error, setError] = useState<string>("");
 
@@ -38,7 +37,7 @@ export const Home = () => {
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setFolderName(e.target.value.trim());
+        setFolderName(e.target.value);
     };
 
     const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -47,7 +46,8 @@ export const Home = () => {
 
     const handleAddFolder = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!folderName) {
+        const trimedFolderName = folderName.trim();
+        if (!trimedFolderName) {
             setError("Folder name is required");
             return;
         }
@@ -57,7 +57,7 @@ export const Home = () => {
         );
 
         const generatedFolderName = generateFolderName(
-            folderName,
+            trimedFolderName,
             rennderedFoldersNames
         );
 

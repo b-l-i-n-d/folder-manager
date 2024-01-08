@@ -1,18 +1,16 @@
-import { useContext } from "react";
-
 import { Button } from "../ui/button/button";
 import { Modal } from "../ui/modal/modal";
 
-import { FolderDispatchContext } from "../../context/folder-context";
+import { useFolderDispatchContext } from "../../context/folder-context";
 import {
-    ModalContext,
-    ModalDispatchContext,
+    useModalContext,
+    useModalDispatchContext,
 } from "../../context/modal-context";
 
 export const DeleteFolderModal = () => {
-    const { setFolders } = useContext(FolderDispatchContext);
-    const { isOpen, data: modalData, type } = useContext(ModalContext);
-    const { onClose } = useContext(ModalDispatchContext);
+    const { setFolders } = useFolderDispatchContext();
+    const { isOpen, data: modalData, type } = useModalContext();
+    const { onClose } = useModalDispatchContext();
 
     const isModalOpen = isOpen && type === "deleteFolder";
 
