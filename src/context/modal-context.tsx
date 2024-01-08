@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+
 import { TModalType } from "../types/types";
 
 interface IModalContext {

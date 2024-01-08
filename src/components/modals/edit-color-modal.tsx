@@ -1,11 +1,13 @@
 import { ChangeEvent, FormEvent, useContext, useState } from "react";
+
+import { Button } from "../ui/button/button";
+import { Modal } from "../ui/modal/modal";
+
 import { FolderDispatchContext } from "../../context/folder-context";
 import {
     ModalContext,
     ModalDispatchContext,
 } from "../../context/modal-context";
-import { Button } from "../ui/button/button";
-import { Modal } from "../ui/modal/modal";
 
 const predefinedColor: {
     [key: string]: string;

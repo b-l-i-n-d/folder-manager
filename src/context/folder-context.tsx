@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
+
 import { IFolderProps, TSortType } from "../types/types";
 
 interface IFolderContext {

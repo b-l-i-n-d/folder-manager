@@ -31,7 +31,7 @@ export const Dropdown = ({
     const id = useId().split(":")[1];
     const drop = useRef<HTMLDivElement>(null);
 
-    const handleClick = (e: MouseEvent<Element>) => {
+    const handleClick = (e: Event) => {
         if (
             !(e.target as HTMLElement).closest(`#${drop.current?.id}`) &&
             isOpen
@@ -57,9 +57,9 @@ export const Dropdown = ({
     };
 
     useEffect(() => {
-        document.addEventListener("click", (e) => handleClick(e));
+        document.addEventListener("click", handleClick);
         return () => {
-            document.removeEventListener("click", (e) => handleClick(e));
+            document.removeEventListener("click", handleClick);
         };
     });
 

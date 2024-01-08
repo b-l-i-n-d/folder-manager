@@ -26,3 +26,14 @@ npm run dev
 -   [x] Create folder
 -   [x] Explore folder
 -   [x] Backword navigation
+-   [x] Delete folder
+-   [x] Localstorage for data storing
+-   [x] Sort by alphabetically
+-   [x] Change folder color
+
+## Technologies
+
+-   [x] React
+-   [x] Css for styling
+-   [x] Localstorage for data storing
+-   [x] Contex API for state sharing
